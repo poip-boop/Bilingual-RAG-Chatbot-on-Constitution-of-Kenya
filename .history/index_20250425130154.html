@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kenya Constitution Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        h1 {
+            text-align: center;
+        }
+        .input-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        #question {
+            flex-grow: 1;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #response {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            min-height: 100px;
+            white-space: pre-wrap;
+        }
+        .typewriter {
+            animation: typing 2s steps(40, end);
+            overflow: hidden;
+        }
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Kenya Constitution Chatbot</h1>
+    <div class="input-container">
+        <input type="text" id="question" placeholder="Ask a question about the Kenyan Constitution...">
+        <button onclick="askQuestion('en')">English</button>
+        <button onclick="askQuestion('sw')">Swahili</button>
+    </div>
+    <div id="response"></div>
+
+    <script>
+        async function askQuestion(language) {
+            const question = document.getElementById("question").value.trim();
+            const responseDiv = document.getElementById("response");
+            responseDiv.innerHTML = language === 'sw' ? "Inatafsiri..." : "Loading...";
+            responseDiv.classList.remove("typewriter");
+
+            if (!question) {
+                responseDiv.innerHTML = language === 'sw' ? "Tafadhali weka swali." : "Please enter a question.";
+                return;
+            }
+
+            try {
+                const response = await fetch("http://localhost:8000/ask", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ question, language })
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                responseDiv.innerHTML = data.answer;
+                responseDiv.classList.add("typewriter");
+            } catch (error) {
+                responseDiv.innerHTML = language === 'sw' ? "Hitilafu: " + error.message : "Error: " + error.message;
+            }
+        }
+
+        document.getElementById("question").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                askQuestion("en");
+            }
+        });
+    </script>
+</body>
+</html>
