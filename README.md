@@ -19,7 +19,7 @@ A Groq API key (sign up at Groq to obtain one)
 Installation
 
 Clone the Repository:
-git clone https://github.com/your-username/lawyer-chatbot.git
+git clone https://github.com/poip-boop/Bilingual-RAG-Chatbot-on-Constitution-of-Kenya.git
 cd lawyer-chatbot
 
 
